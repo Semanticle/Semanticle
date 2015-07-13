@@ -1,0 +1,142 @@
+## Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+## Supplied subject to The GNU General Public License v3.0
+##
+## Created 10 Jan 2010
+## prefs02.py cloned from prefs01.dat 12 May 2010
+## prefs.dat cloned from pref02.dat 07 Jul 2010
+## Last Updated 20 Nov 2010
+##
+## Preference Settings
+## Above called by instantiating Settings from singleton07.py
+##
+## 21/02/2010: Allow_plural_QueryElement_in_ruleRHS|LHS prefs added
+## 22/02/2010: Overlapping_QueryExpression_value_filter pref added
+## 08/04/2010:
+##	- Various Content, Sequence and Transformation rendering defaults added
+##	- stores_showmetrics prefs added
+##  - stores_metrics pref added
+## 14/04/2010: stores_DTSTrulesmode added
+## 28/04/2010: UIDmode and URIcomponents added
+## 29/04/2010: Prefs added for UDC and URI, contains predicate and URI base
+## 11/05/2010: ContentDefaultURI pref added
+## 12/05/2010: prefs02.dat cloned from prefs01.dat
+## 12/05/2010: terms moved from prefs01.dat to alias_ontology01.dat
+## 07/07/2010: prefs.dat cloned from prefs02.dat for SVN versioning
+## 02/08/2010: ResultsTerminator and ResultsFileTerminator setting added
+## 03/08/2010: More Headers and Footers setting support:
+##	- Terminator settings renamed
+##  - Header settings added
+##	- both support a number of optional variable substitutions
+## 09/08/2010: Setting to maintain a fulltextindex
+## 10/08/2010: Further full text index settings
+## 10/08/2010: fti_regex supports listed regex index generating patterns to support ovberlapping indexes
+## 10/08/2010: fti_splitmatch setting.
+##			   - Supports discontiguous like value matching. So '?p~fully_relationship' could match 'fully_recursive_relationship'.
+##			   - This splits match values in the same way stored values and tests how well the parts match.
+## 11/08/2010: fti_splitmodes setting - specifies discontiguous match options which may be any of:
+##			   - Complete:	 for a pattern to match it must match ALL split match values, rather just some.
+##			   - Consistent: matches must be present in all matching patterns, rather than in one and not another.
+##			   Note: patterns which don't match anything are ignored. So the above apply only to patterns which do produce matches.
+## 23/08/2010: structure setting added - specifies internal data structure used to store triples (dict or rbtree).
+## 31/08/2010: inferenceCacheCount option to trade performance for memory.
+## 06/09/2010: inferenceCachePersistence option to retain inference cache data between sessions.
+## 07/09/2010: FFI option for automated fed forward inference support.
+## 11/09/2010: Further FFI administration settings:
+##             - FFIpercentageChangeTrigger for triggering feed forward inference data generation.
+##             - FFInestedDTS feed forward inference data to include nested distributed stores.
+## 20/09/2010: notifyInterpolationErrors - makes these errors optional
+## 12/10/2010: tripleOrder - for consistent ordering of system generated and user supplied triple elements.
+## 19/10/2010: tripleOrderComment - user configurable active export/import triple order documentation.
+## 20/11/2010: updates ackompanying wiki documentation.
+##
+stores_exporterrors							::- yes
+stores_importmode							::- merge				#.. [merge|keep|replace]
+stores_reserved_predicates					::- instance_of,antonym_of,synonym_of,contains,contained_by,has_urins,urins_for		#.. predicates for which there aren't synonyms or antonyms
+stores_metrics								::- 0,timestamp,time,1,total q,tq,2,ok q,qc,3,ok q: u qkey,usqkey,4,q failed,fq,5,u q failed,ufq,6,total b q,tbq,7,ok b q,sbq,8,u ok b q,usbq,9,total ok nb q,snbq,10,rules,rl,11,g rules,gr,12,rg rules,rgr,13,r failed,fr,14,u r failed,ufr,15,EQL res,irs,16,EQL rule res,irl,17,bl rules,br,18,bl rg rule,brgr,19,bl failed q,bfq,20,bl dup EQL res,bdrs,21,bl dup EQL rule res,bdrl,22,bl dup QL res,bdql,23,max cached res count,maxrc,24,max res count query,qkeymax
+stores_showmetrics							::- yes					#.. [yes|no] report performance metrics
+stores_DTSshowmetrics						::- yes					#.. [yes|no] report performance metrics - if missing defaults to stores_showmetrics
+stores_DTSrulesmode							::- merge				#.. [merge|keep|replace|first] action on retrieving multiple versions of a rule - if missing defaults to keep
+Allow_plural_QueryElement_in_ruleRHS		::- true				#.. if False only 1st QueryExpression in a QueryElement will be instantiated
+Allow_plural_QueryElement_in_ruleLHS		::- true				#.. if False only 1st QueryExpression in a QueryElement will be instantiated
+Overlapping_QueryExpression_value_filter	::- generalise  		#.. [generalise|specialise|sentinel_none]. if generalise remove more specific values, else remove more generic values
+ContentDefaultRender						::- py	        		#.. [py|nestpy|text|csv|relational]. if supplied rendering protocol invalid or missing
+ContentDefaultMode							::- any					#.. [all|any|triples|relations]. if supplied generation mode invalid or missing
+ContentDefaultUnique						::- on					#.. [on|off]. if supplied uniqueness filtering invalid or missing
+ContentDefaultPrefix						::-						#.. [add|+|delete|-|]. if supplied import/export prefix invalid or missing
+ContentDefaultURI							::- nativealias			#.. [export|native|nativealias]. Default URI representation for output generation
+SequenceDefaultRender						::- text	    		#.. [py|nestpy|text|csv|relational]. if supplied rendering protocol invalid or missing
+TransformationDefaultRender					::- text	    		#.. [py|nestpy|text|csv|relational]. if supplied rendering protocol invalid or missing
+URIsupport									::- yes					#.. [yes|no|model]
+URIpredicatesModelled						::- has_uriprotocol,has_uriauthority,has_uripath,has_uriquery,has_urifragment,has_uribase						#.. List which of the following to model: has_uri_protocol,has_uri_authority,has_uri_path,has_uri_query,has_uri_fragment,has_uri_base
+URIcommonbase								::- http://www.semanticle.org/triples/	#.. note individual stores may have their own URIbasesuffix appended to this
+fti											::- true				#.. [true|false] maintain an in memory fulltext index
+fti_regex									::- ['[A-Za-z0-9]+','[A-Za-z0-9\-\_]+'] #.. Pythonic list of alternative regex for adding words to the full text index. Hardcoded default is ['[A-Za-z0-9]+','[A-Za-z0-9\-\_]+']
+fti_usecase									::- false				#.. [true|false] Case sensitivity. Hardcoded default is true
+fti_splitmatch								::- true				#.. [true|false] Allow discontigous full text index matching. Hardcoded default is true
+fti_splitmodes								::- complete,consistent	#.. Any of [complete|consistent] Discontiguous matching modes. Hardcoded default is complete,consistent
+## Note the following Headers support the following variable substitutions %title%, %author% and %start% - plural spaces get reduced
+ResultsHeader								::- ## START %title% %author% - Start: %start% ##		            					#.. [None|False|string]. If None or a string can be overidden at run-time. If False this turns all output headers off.
+ResultsHeader_for_Files						::- False				#.. [None|False|string]. If None or a string can be overidden at run-time. If False this turns file output terminators off.
+## Note the following Footers support the following variable substitutions %title%, %author%, %start%, %end% and %duration% - plural spaces get reduced
+ResultsFooter								::- ## END %title% %author% - Start: %start%, End: %end%, Duration: %duration% ##		#.. [None|False|string]. If None or a string can be overidden at run-time. If False this turns all output footers off.
+ResultsFooter_for_Files						::- False				#.. [None|False|string]. If None or a string can be overidden at run-time. If False this turns file output terminators off.
+structure									::- dict				#.. [dict|rbtree]. Store index type - use rbtree for fast indexed comparative selections ie >,>=,<,<=
+notifyInterpolationErrors					::- off					#.. [on|off]. Inference notifies errors attempting to unify querying with solving QueryExpressions. Default is off.
+tripleOrder									::- s,p,o               #.. Preferred sequencing of stored and io triple elements. Needed to ensure consistency between system generated and user supplied triples. May be overriden by store specific ordering if defined. Hardcoded default is s,p,o.
+#ioTripleOrder								::- s,p,o               #.. Preferred sequencing of io only triple elements. Overrides tripleOrder for io only.
+tripleOrderComment                    		::- # the following triples are ordered as .,.,. ** DO NOT DELETE ** 					#.. io file comment line designating order of next set of triples where ".,.,." gets replaced by the actual order.
+## Inference caching and performance:
+##	Inference is fundamental to the reasoning capabilities of the Semanticle Framework. Without it the Triples Stores are just multi-dimensional indexes.
+##  Normally inferred queries are solved in 3 stages:
+##   1. matching triple retrieval (very fast uses Triple Stores as multi-dimensional indexes)
+##   2. information gathering for infered fact retrieval (processor intensive - time consuming)
+##   3. infered fact delivery
+##  Different settings impact these stages differently:
+##	 - Feed Forward Inference populates the DTS with missing infered triples. Therefore:
+##      - Once done results which otherwise require stages 2 and 3 can be delivered from stage 1
+##      - This data persists between session if the store itself persists.
+##   - FFIperecentageChangeTrigger determines when feed forward inference is gathered and maintained as well as what is gathered:
+##	    - setting to 0:
+##         - means the index gets rebuilt if any changes have been made to store contents before queries are run.
+##         - therefore FFI data is always fully up to date
+##         - because of which it make sense to generate all inferable data
+##         - which means that queries can perform inference solely based on this data
+##      - setting between 0 and 100:
+##         - means the index gets built initially
+##         - but it is only rebuilt when the total store size at last rebuild/store size now*100 > this change value
+##           (the ratio is inverted if the store is now smaller than before)
+##         - therefore:
+##            - for most queries the feed forward inference data will be incomplete
+##            - some inference must be performed at query time
+##            - a quicker partial rebuild is used
+##            - rebuild is triggered by a query but get done after it has completed - so not affecting its performance.
+##         - benefit is the bulk of results can be supplied up-front without inference
+#      - setting to 100:
+##         - means the index gets built initially
+##         - however, because total data change is not possible it will only be rebuilt by invoking store._resetFFI(trigger=True) via the API
+##         - rebuild is partial
+##         - some inference will be performed at query run time
+##   - FFInestedDTS if True will include nested distributed stores (DTS) in generating feed forward inference data:
+##      - Relevant only for stores with nested DTS:
+##         - allows the use of FFIperecentageChangeTrigger = 0 - for full feed forward inference generation
+##         - otherwise full feed forward inference generation is impossible and FFIpercentedChangeTrigger = 0 will get interpretted as 0.001
+##   - Inference caching retains internal data from stages 1 and 2.
+##      - Without Feed Forward Inference it yields massive performance gains but is heavy on memory.
+##      - With Forward Inference its benefits are limited to stage 1 around 12% - questionable whether this is worth inferenceCachePersistence.
+##      - This data is not stored as part of the store since it isn't triple data.
+##      - Persistence within a DB:
+##         - set inferenceCachePersistence = on
+##         - only Completed Outcomes data (Inference cache count = 1) is independent of Queryables instantiation and may therefore persist.
+##         - if no DB or no inferenceCaches, inferenceCachePersistence setting is ignored.
+##  Further Remarks:
+##   - Feed forward inference:
+##      - only works with a DistTripleStore - though this can be operated transparently as if it were a single TripleStore.
+##      - adds forward fed inferred data to a seperate internal store. The contents of which are excluded from:
+##         - exports.
+##         - or from non inferable QueryExpressions.
+##   - both Feed Forward Inference and inference caches get automatically rebuilt if the underlying data changes.
+inferenceCacheCount							::- 2					#.. [0|1|2]. Number of inference caches for Query and Rule outcomes. 0 - None (NOT RECOMMENDED), 1 - Completed outcomes only, 2 - Completed and intermediate outcomes (RECOMMEDED)
+inferenceCachePersistence					::- off					#.. [on|off]. If store persists does this include the inference caches? Default is on or yes.
+FFI											::- on					#.. [on|off]. Feeds inference forward to an internal store. (works only with DTS storage types). Default is on.
+FFIpercentageChangeTrigger					::- 0					#.. [integer 0-100]. Percentage change to underlying store data triggering an FFI rebuild if any. From 0 for any change to 100 for none or manual. Default is 0
+FFInestedDTS                                ::- no					#.. [no|yes]. Relevant only in in combination with nested distributed stores. If yes permits FFIpercentageChangeTrigger = 0 which otherwise gets interpretted as 0.001. Default is no.

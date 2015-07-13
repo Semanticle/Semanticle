@@ -1,0 +1,110 @@
+# Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+# Supplied subject to The GNU General Public License v3.0
+#
+# created on 17 Dec 2009
+# eexp_test04.bnf cloned from eexp_test03.bnf 10 Mar 2010
+# eexp_test05.bnf cloned from eexp_test04.bnf 18 Mar 2010
+# eexp_test06.bnf cloned from eexp_test05.bnf 07 Apr 2010
+# eexp_test.bnf cloned from eexp_test06.bnf 07 Jul 2010
+# last modified on 24 Nov 2010
+#
+# EBNF syntax rules for parsing QueryExpression._getMatch()
+# note:
+#	terminals cannot be mixed with non-terminals or other terminals
+#	context free, so only one clause per rhs
+#	potential recurrances of clause should be identified by unique non-terminals if needed in results
+#		ie. <vop> and <eop> are both <op>'s
+#	regex:
+#		use // parenthesis for expression: ie /match and substitution/ or /match/substitution/
+#		use (()) for match and returned match within the expression. ie returned match may strip quotes or leading ? etc
+#	fastrack:
+#		enclose python userexits Element method within {}. e.g. {_getTriples()}
+#	clause order not significant
+#	suffixed comments must be identified by #..
+#
+#	note: TripleStore._solveTriple() mandates the following:
+#			terminators 		- <var>, <val>, <sval>, <op>, <vop>, <eop>, <triples>
+#			non-terminators 	- <valexp>
+#			root non-terminator - <exp>
+#	note1: Triple value expressions are currently only bound to variables via = or !=
+#			specifically the problem arises in extracted the internal bindings these may carry
+#
+#	17/12/09
+#		triple list value expression support using new support for fasttrack user exits
+#
+#	10/03/2010
+#		<tvallist> and <tval> defined for more flexible integration of triples and values into a single QueryExpression
+#
+#	18/03/2010
+#		non inferred versions of <op>, <top> and <vop> comperands defined
+#
+#	08/05/2010
+#		<op>		::- /^(\= *\<\=)/=<=/ correction
+#
+#	11/05/2010
+#		<val> main clause now supports unquoted base#fragment pairs where the fragment can itself be a URI base (as possible in rdf exports of URI or namespace models)
+#
+#   07/07/2010 eexp_test.bnf cloned from eexp_test06.bnf for SVN versioning
+#
+<valexp>    ::- <sval><eop><val>									#.. <eop> comparator with value equation
+<exp>       ::- <tvallist>
+<exp>       ::- <varlist>
+<vallist>	::- <val><valsep><vallist>
+<vallist>	::- <val>
+<tvallist>	::- <tval><valsep><tvallist>							#.. <tvallist> comprises list of <val> or <triples>
+<tvallist>	::- <tval>
+<tval>		::- <val>
+<tval>		::- <triples>
+<varlist>	::- <var><varsep><varlist>
+<varlist>	::- <var>
+<triples>	::- {_getTriples()}										#.. user exit tries to get matching list of 3 element tuples
+<valsep>	::- |													#.. or /((\,)\s*?)/
+<varsep>	::- =
+<exp>       ::- <varlist><op><vallist>								#.. <op>  comparator for simple (non triple) expressions
+<exp>       ::- <varlist><top><tvallist>							#.. <top>  comparator for simple (triple) expressions
+<exp>		::- <varlist><vop><valexp>								#.. <vop> comparator to value equations
+<var>       ::- /(\?([\!a-zA-Z0-9][a-zA-Z0-9_]+[a-zA-Z0-9]))/		#.. greedy match alphanumeric prefixed by ? with optional _ inside
+<var>       ::- /(\?([a-zA-Z0-9]+))/								#.. greedy match alphanumeric prefixed by ?
+<op>		::- =
+<op>		::- !=
+<op>		::- ~													#.. return full text search matches
+<op>		::- !~													#.. return failed full text search matches
+<op>		::- >
+<op>		::- >=
+<op>		::- <
+<op>		::- <=
+<op>		::- /^(\= *\=)/==/										#.. return non-infered exact matches                   (==)
+<op>		::- /^(\= *\!\=)/=!=/									#.. return non-infered failed exact matches            (=!=)
+<op>		::- /^(\= *\~)/=~/										#.. return non-infered full text search matches        (=~)
+<op>		::- /^(\= *\!\~)/=!~/									#.. return non-infered failed full text search matches (=!~)
+<op>		::- /^(\= *\>)/=>/										#.. return non-infered greater than matches            (=>)
+<op>		::- /^(\= *\>\=)/=>=/									#.. return non-infered greater than or equals matches  (=>=)
+<op>		::- /^(\= *\<)/=</										#.. return non-infered less than matches               (=<)
+<op>		::- /^(\= *\<\=)/=<=/									#.. return non-infered less than or equals matches     (=<=)
+<top>		::- =													#.. unique operator for <triples> see note 1
+<top>		::- !=													#.. unique operator for <triples> see note 1
+<top>		::- /^(\= *\=)/==/										#.. unique non-infered operator for <triples> see note 1
+<top>		::- /^(\= *\!\=)/=!=/									#.. unique non-infered operator for <triples> see note 1
+<vop>		::- =
+<vop>		::- !=
+<vop>		::- /^(\= *\=)/==/
+<vop>		::- /^(\= *\!\=)/=!=/
+<eop>		::- =
+<eop>		::- !=
+<eop>		::- >
+<eop>		::- >=
+<eop>		::- <
+<eop>		::- <=
+<val>		::- /^((\?|\*))/										#.. exact val match "  ##nnn " 	 returns "##nnn"
+<val>		::- /^((\#\#\d+))/										#.. exact val match "  ##nnn " 	 returns "##nnn"
+# below unquoted exact val match as: fragment, base, base#fragment, or namespace#fragment.
+# Because its unquoted it cannot contain spaces. Base must match approx structure of a URL optionally comprising protocol, domain, path and query
+#<val>		::- /^(((?=[^&])(?:[a-z]+:)?(?:\/\/[a-zA-Z0-9\-\.]*)?(?:\/[a-zA-Z0-9\-\_\.\/]*)*(?:(\?[a-zA-Z0-9\-\_]=[a-zA-Z0-9\-\_\%](?:\&[a-zA-Z0-9\-\_]=[a-zA-Z0-9\-\_\%])*))?(?:(?:#[a-zA-Z0-9][a-zA-Z0-9_\-\.]*[a-zA-Z0-9])|(?:[a-zA-Z0-9][a-zA-Z0-9_\-\.]*[a-zA-Z0-9](?:#[a-zA-Z0-9][a-zA-Z0-9_\-\.]*[a-zA-Z0-9])?))))/
+<val>		::- /^(((?=[^&])(?:[a-z]+:)?(?:\/\/[a-zA-Z0-9\-\.]*)?(?:\/[a-zA-Z0-9\-\_\.\/]*)*(?:(\?[a-zA-Z0-9\-\_]=[a-zA-Z0-9\-\_\%](?:\&[a-zA-Z0-9\-\_]=[a-zA-Z0-9\-\_\%])*))?(?:(?:#[a-zA-Z0-9][a-zA-Z0-9_\/\:\.\?\&\=\%\-]*[a-zA-Z0-9\/])|(?:[a-zA-Z0-9][a-zA-Z0-9_\-\.]*[a-zA-Z0-9](?:#[a-zA-Z0-9_\/\:\.\?\&\=\%\-]*[a-zA-Z0-9\/])?))))/
+<val>		::- /^(\'(.+?)\')/										#.. exact val match "'exact'" 	 returns "exact"
+<val>		::- /^(\"(.+?)\")/										#.. exact val match '"exact"' 	 returns 'exact'
+<val>		::- /^((\/.+?\/))/										#.. regex val match "/regex/" 	 returns "/regex/"
+<sval>		::- /^((\/.+?\/)).+/									#.. regex val match	"/regex/"... returns "/regex/"
+<sval>		::- /^(\'(.+?)\').+/									#.. exact val match "'exact'"... returns "exact"
+<sval>		::- /^(\"(.+?)\").+/									#.. exact val match '"exact"'... returns 'exact'
+<sval>		::- /^(([a-zA-Z0-9][a-zA-Z0-9_ ]*[a-zA-Z0-9])).+/		#.. exact val match "  ex_ -act " 	 returns "ex_ -act"

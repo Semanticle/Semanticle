@@ -1,0 +1,53 @@
+## Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+## Supplied subject to The GNU General Public License v3.0
+##
+## Created 04 Jan 2010
+## errors.dat cloned from errors01.dat 07 Jul 2010
+## Last Updated 10 Sep 2010
+##
+## Error Messages
+## Above called by instantiating Settings from singleton.py
+##
+## Processed by mterrors
+##
+## 19/02/2010: QueryElementInterpolationError added
+## 21/02/2010: RuleQueryElementCardinalityError added
+## 07/04/2010: SuppliedAttributeValueError, DefaultAttributeMissingError and AttributeTransformationFailure added
+## 05/05/2010: URI errors added
+## 07/07/2010: errors.dat cloned from errors01.dat for SVN versioning
+## 27/08/2010: InvalidSettingError
+## 10/09/2010: QueryPotentialAmbiguityError
+##
+EquationListTypesError				::- EquationList Types Error - types $0 may not be combined									#.. $0 = types slist._contents()
+EquationListFormatError				::- EquationList Format Error - $0															#.. $0 = match
+EquationFormatError					::- Equation Format Error - must be a list of one or more QueryList instances
+EquationLogicError					::- Equation Logic Error - must specify yieldable bindings
+QueryListFormatError				::- QueryList Format Error - $0 must be a list of one or more tuple or Query instances		#.. $0 = match
+QueryFormatError					::- Query Format Error - $0 must be a tuple													#.. $0 = match
+QueryTripleError					::- Query Triple Error - $0 must be a triple												#.. $0 = match
+QueryExpressionError				::- Query Expression Error - $0 invalid syntax												#.. $0 = query element
+SolutionQueryStoreError				::- Solution Query Store Error - missing or invalid Query Store
+PatternError						::- Pattern must contain a list of tuples 													#.. not issued
+PatternTripleSizeError				::- Pattern Triple Size Error - triple $0 contains $1 rather than the required 3 elements	#.. $0 = supplied pattern, $1 = nr of elements
+PatternEmptyError					::- Pattern Empty Error - supplied Pattern is empty
+PatternDictionaryError				::- Pattern Dictionary Error - $0 is invalid												#.. $0 = dictionary in pattern
+ParseIncompleteError				::- Parse Incomplete Error - could not parse $1 in $0										#.. $0 = string to parse, $1 string parsed
+ParseInvalidRegexError				::- Parse Invalid Regex Error $0															#.. $0 = failed regex
+ParseRulesLoadingError				::- Parser could not load $0 rules															#.. $0 = unloaded parser rules filename
+UnbalancedParenthesisError			::- Unbalanced Parenthesis Error - in $0													#.. $0 = failed expression
+UnspecifiedParenthesisError			::- Unspecified Parenthesis Error
+QueryElementInterpolationError  	::- QueryElement $0 cannot invoke QueryElement $1                                           #.. $0 Query.QueryElement._expandMatch(), $1 Rule.QueryElement._expandMatch()
+RuleQueryElementCardinalityError	::- Rule LHS QueryElement Error - $0 contains more than 1 QueryExpression                   #.. $0 QueryElement as list
+SuppliedAttributeValueError			::- Invalid Attribute Assignment: $0.$1 = $2 (attempting to access existing value instead)	#.. $0 object class, $1 attribute, $2 value
+AttributeMissingError        		::- Attribute $0.$1 not found (attempting to set default value instead)						#.. $0 object class, $1 expected default variable name
+InvalidSettingError        			::- Invalid Setting: $0 = $1; instead: $0 = $2												#.. $0 setting name, $1 setting value, $2 default value
+DefaultAttributeMissingError        ::- Expected Default attribute $0.$1 not found (null assumed instead)						#.. $0 object class, $1 expected default variable name
+AttributeTransformationFailure		::- $2.$3 could not transform $4 to instantiate $0.$1 attribute (null assumed instead)		#.. $0 object class, $1 attribute, $2 function class, $3 function name, $4 function input value
+AddTripleError						::- Add Triple Error - $0 is not a triple													#.. $0 failed triple
+URIparseError						::- URI parse error - $0 is not a valid URI													#.. $0 failed URI
+URIauthorityError					::- URI authority error - $0 is not a valid authority in URI $1								#.. $0 failed authority, $1 failed URI
+URInamespaceError					::- URI namespace error - $0 is not a valid URI namespace									#.. $0 failed namespace
+URIaddNamespaceError				::- URI add namespace error - namespace $0 could not be added for URI base $1				#.. $0 failed namespace, $1 failed URI base
+URIdeleteNamespaceError				::- URI delete namespace error - namespace $0 could not be deleted for URI base $1			#.. $0 failed namespace, $1 failed URI base
+URIsupportOff						::- URI support not activated warning
+QueryPotentialAmbiguityError		::- Query $0 is a potentially ambiguous - contains incomplete exact or infered sub-queries	#.. $0 expanded query concerned

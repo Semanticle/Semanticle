@@ -1,0 +1,70 @@
+# Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+# Supplied subject to The GNU General Public License v3.0
+#
+# created on 22/Nov/2009
+# last modified on 22/11/2009
+#
+# BNF syntax rules for triple store defintions (rules and triples)
+# note:
+#	terminals cannot be mixed with non-terminals or other terminals
+#	context free, so only one clause per rhs
+#	potential recurrances of clause should be identified by unique non-terminals if needed in results
+#		ie. <vop> and <eop> are both <op>'s
+#	regex:
+#		use // parenthesis for expression
+#		use (()) for match and returned match within the expression. ie returned match may strip quotes or leading ? etc
+#	clause order not significant
+#	suffixed comments must be identified by #..
+#
+#	note: TripleStore._solveTriple() mandates the following:
+#			terminators 		- <var>, <val>
+#			non-terminators 	- <assertion>, <lhsrule>, <rhsrule>, <triple>, <sub>, <prd>, <obj>, <flist>, <list>
+#			root non-terminator - <predicate>
+#
+<predicate>	::- <assertion>
+<predicate>	::- <lhsruls><rop><rhsrule>
+<lhsrule>	::- <action><triple>
+<lhsrule>	::- <triple>
+<assertion>	::- <action><ftriple>
+<assertion>	::- <ftriple>
+<action>	::- add
+<action>	::- delete
+<ftriple>	::- <st><fsub><sep><fprd><sep><fobj><et>
+<fsub>		::- <flist>
+<fsub>		::- <fitemexp>
+<fprd>		::- <flist>
+<fprd>		::- <fitemexp>
+<fobj>		::- <flist>
+<fobj>		::- <fitemexp>
+<fitemexp>	::- <triple>
+<fitemexp>	::- <val>
+<flist>		::- <sl><flist1><el>
+<flist1>	::-	<fitemexp>
+<flist1>	::- <fitemexp><sep><flist>
+<val>		::- /^(\'(.+?)\')/								#.. exact val match "'exact'" 	 returns "exact"
+<val>		::- /^(\"(.+?)\")/								#.. exact val match '"exact"' 	 returns 'exact'
+#<val>		::- /^((\/.+?\/))/								#.. regex val match "/regex/" 	 returns "/regex/"
+<triple>	::- <st><sub><sep><prd><sep><obj><et>
+<sub>		::- <list>
+<sub>		::- <itemexp>
+<prd>		::- <list>
+<prd>		::- <itemexp>
+<obj>		::- <list>
+<obj>		::- <itemexp>
+<itemexp>	::- <triple>
+<itemexp>	::- <val>
+<itemexp>	::- <var>
+<list>		::- <sl><list1><el>
+<list1>		::-	<itemexp>
+<list1>		::- <itemexp><sep><flist>
+<var>       ::- /(\?([a-zA-Z0-9][a-zA-Z0-9_]+[a-zA-Z0-9]))/	#.. greedy match alphanumeric prefixed by ? with optional _ inside
+<var>       ::- /(\?([a-zA-Z0-9]+))/						#.. greedy match alphanumeric prefixed by ?
+<sep>		::- ,
+<st>		::- (
+<et>		::- )
+<sl>		::- [
+<el>		::- ]
+# RHS
+<rop>		::-	:-
+<rhsrule>	::- <triple>
+<rhsrule>	::- <triple><sep><rhsrule>

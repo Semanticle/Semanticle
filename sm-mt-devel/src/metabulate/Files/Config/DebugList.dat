@@ -1,0 +1,32 @@
+## Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+## Supplied subject to The GNU General Public License v3.0
+##
+## Created 13 Nov 2009
+## Last Updated 11 July 2010
+##
+## List of sources for automated debug statement line renumbering
+## Above called by running debug02.py or
+##	 d = Debug()
+## 	 d._renumberSources(report='y')
+##
+## the report switch in the above turns reporting on or off.
+##
+## 25/11/09
+##	supports re-configured M4400
+## 11/07/10
+##  - refactored for SVN versioning
+##  - exploits config variable substitution
+## 14/08/10
+##  - stores\structured.py added
+##  - stores\fti.py added
+
+%sourcebase%parsers\parse.py
+%sourcebase%queries\query.py
+%sourcebase%renderers\render.py
+%sourcebase%renderers\protocol.py
+%sourcebase%stores\stores.py
+%sourcebase%stores\structured.py
+%sourcebase%stores\fti.py
+%sourcebase%rules\rules.py
+%sourcebase%facades\facade.py
+%sourcebase%utils\utils.py

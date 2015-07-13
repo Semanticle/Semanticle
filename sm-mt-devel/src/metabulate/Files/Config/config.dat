@@ -1,0 +1,89 @@
+## Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+## Supplied subject to The GNU General Public License v3.0
+##
+## Created 04 Jan 2010
+## config04 cloned from config03 19 Apr 2010
+## config05 cloned from config04 07 May 2010
+## config06 cloned from config05 12 Jun 2010
+## config cloned from config06 07 Jul 2010
+## Last Updated 20 Aug 2011
+##
+## Configuration Settings
+## Above called by instantiating Settings from singleton.py
+##
+## Default configuration: %softwarebase%/metabulate/Files/[Config|Data|Debug|Errors|Metrics|Results|Stores|Unloads]/
+## If you wish to deviate from this you will have to ammend the settings here.
+## To update the softwarebase you will also have to update the entry in metabulate/singletons/singleton.py
+##
+## 08/04/2010: stores metrics file configs added
+## 19/04/2010: config04 cloned from config03
+## 	- stores db path and type config added
+## 	- stores STSmetrics removed and DSTSmetrics renamed DTSmetrics
+## 20/04/2010: paths entered in mixed os styles - to test auto correction
+## 07/05/2010: config05 cloned from config04
+## 	- eexp_test06 bnf exploited for URI support
+## 12/06/2010: config06 cloned from config05
+##  - folders re-configured
+## 07/07/2010: config cloned from config06 for SVN versioning
+## 10/07/2010: re-factored locations:
+##  - additional debug and results path and type settings
+##  - paths switched to new location
+##  - user defined config variables exploited
+## 12/07/2010: DebugList path, name and type settings
+## 20/08/2011: Softcoded softwarebase support added for installation portability
+##
+## config variables:
+##  - can be any otherwise unique config variable comprising A-Za-z0-9_-
+##  - variables must be defined before they can be used
+##	- variables can used in other settings files likes prefs.dat, alias_ontology.dat, errors.dat and DebugList.dat
+##  - both sourcebase and configfilesbase must be defined
+##  - softwarebase is determined automatically by singleton.py for portabilty
+##  - However if you want to locate configfilesbase outside the sourcebase you will need to change it:
+##     - here and in singleton.py and
+##     - if the code gets moved. For example, to a different OS
+##
+sourcebase						::- %softwarebase%metabulate\\
+configfilesbase					::- %sourcebase%Files/			#.. mandatory do not delete or rename this variable
+## standard config variables
+stores_importfile_path			::- %configfilesbase%Results\\
+stores_importfile_name			::- mystore
+stores_importfile_type			::- sts
+stores_exportfile_path			::- %configfilesbase%Results\\
+stores_exportfile_name			::- mystore
+stores_exportfile_type			::- sts
+stores_loadfile_path			::- %configfilesbase%Unloads/
+stores_loadfile_name			::- mystore
+stores_loadfile_type			::- pyo
+stores_unloadfile_path			::- %configfilesbase%Unloads\\
+stores_unloadfile_name			::- mystore
+stores_unloadfile_type			::- pyo
+stores_metricfile_path			::- %configfilesbase%Metrics/
+stores_metricfile_name			::- metrics
+stores_metricfile_type			::- csv
+stores_DTSmetricfile_path		::- %configfilesbase%Metrics/	#.. defaults to stores_metricfile_..
+stores_DTSmetricfile_name		::- metricsDTS
+stores_DTSmetricfile_type		::- csv
+stores_dbpath					::- %configfilesbase%Stores/	#.. Note use Unix path seperators even for Windows
+stores_dbtype					::- fs
+stores_encoding					::- UTF-8
+stores_timestamped				::- no
+stores_versioned				::- no
+stores_secured					::- no
+stores_infer					::- yes
+parserfile_name_query			::- eexp_test
+parserfile_path					::- %configfilesbase%Config\\
+parserfile_loadtype				::- pyo
+parserfile_bnftype				::- bnf
+errorlogfile_path				::- %configfilesbase%Errors\\
+errorlogfile_name				::- errorlog
+errorlogfile_type				::- log
+errorstoconsole					::- yes
+errors_minreportlevel			::- 1
+errors_minabortlevel			::- 3
+debugfile_path					::- %configfilesbase%Debug\\
+debugfile_type					::- txt
+resultsfile_path				::- %configfilesbase%Results\\
+resultsfile_type				::- txt
+debuglist_path					::- %configfilesbase%Config\\
+debuglist_name					::- DebugList
+debuglist_type					::- dat

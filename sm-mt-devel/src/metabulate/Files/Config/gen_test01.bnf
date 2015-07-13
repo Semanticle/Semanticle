@@ -1,0 +1,58 @@
+# Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+# Supplied subject to The GNU General Public License v3.0
+#
+# created on 04/Nov/2009
+# last modified on 04/Nov/2009
+#
+# BNF syntax rules for results generation expressions
+# note:
+#	terminals cannot be mixed with non-terminals or other terminals
+#	context free, so only one clause per rhs
+#	potential recurrances of clause should be identified by unique non-terminals if needed in results
+#		ie. <vop> and <eop> are both <op>'s
+#	regex:
+#		use // parenthesis for expression
+#		use (()) for match and returned match within the expression. ie returned match may strip quotes or leading ? etc
+#	clause order not significant
+#	suffixed comments must be identified by #..
+#
+#	note: TripleStore._solveTriple() mandates the following:
+#			terminators 		- <var>, <val>, <sval>, <op>, <vop>, <eop>
+#			non-terminators 	- <valexp>
+#			root non-terminator - <exp>
+#
+<valexp>    ::- <sval><eop><val>							#.. <eop> comparator with value equation
+<exp>       ::- <vallist>
+<exp>       ::- <varlist>
+<vallist>	::- <val><valsep><vallist>
+<vallist>	::- <val>
+<varlist>	::- <var><varsep><varlist>
+<varlist>	::- <var>
+<valsep>	::- |											#.. or /((\,)\s*?)/
+<varsep>	::- =
+<exp>       ::- <varlist><op><vallist>						#.. <op>  comparator for simple expressions
+<exp>		::- <varlist><vop><valexp>						#.. <vop> comparator to value equations
+<var>       ::- /(\?([a-zA-Z0-9][a-zA-Z0-9_]+[a-zA-Z0-9]))/	#.. greedy match alphanumeric prefixed by ? with optional _ inside
+<var>       ::- /(\?([a-zA-Z0-9]+))/						#.. greedy match alphanumeric prefixed by ?
+<op>		::- =
+<op>		::- !=
+<op>		::- ~											#.. return full text search matches
+<op>		::- !~											#.. return failed full text search matches
+<op>		::- >
+<op>		::- >=
+<op>		::- <
+<op>		::- <=
+<vop>		::- =
+<vop>		::- !=
+<eop>		::- =
+<eop>		::- !=
+<eop>		::- >
+<eop>		::- >=
+<eop>		::- <
+<eop>		::- <=
+<val>		::- /^(\'(.+?)\')/								#.. exact val match "'exact'" 	 returns "exact"
+<val>		::- /^(\"(.+?)\")/								#.. exact val match '"exact"' 	 returns 'exact'
+<val>		::- /^((\/.+?\/))/								#.. regex val match "/regex/" 	 returns "/regex/"
+<sval>		::- /^((\/.+?\/)).+/							#.. regex val match	"/regex/"... returns "/regex/"
+<sval>		::- /^(\'(.+?)\').+/							#.. exact val match "'exact'"... returns "exact"
+<sval>		::- /^(\"(.+?)\").+/							#.. exact val match '"exact"'... returns 'exact'

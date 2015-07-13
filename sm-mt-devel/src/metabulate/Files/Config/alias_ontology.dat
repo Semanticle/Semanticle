@@ -1,0 +1,41 @@
+## Copyright 2009, 2010 Anthony John Machin. All rights reserved.
+## Supplied subject to The GNU General Public License v3.0
+##
+## Created 12 May 2010
+## alias_ontology.dat cloned from alias_ontology01.dat 07 Jul 2010
+## Last Updated 24 Nov 2010
+##
+## Preferred Terms
+## Above called by instantiating Settings from singleton07.py
+##
+## Maps system terms (predicates and nouns) with internal ontological significance ::- to preferred aliases for 'nativealias' uri representations
+## Notes:
+##  1) system terms themselves cannot be user configurable since such terms must be identifiable and agreed across any similar system
+##  2) users should avoid uri frangments with alternative meanings which correspond to either system or preferred terms in this file
+##  3) if users wish instead to model aliases using triples for system terms then observe the following:
+##     3.1) remove the system terms thus modeled from terms listed against the stores_reserved_predicates entry in prefs.dat
+##          otherwise the inference needed to exploit modelled aliases will be skipped
+##     3.2) modelled aliases must be to the system terms and not to any aliases for these listed here
+##          since it is the system terms which are actually stored and the aliases which get used only for querying and certain uri output types
+##     3.3) using this table for system aliases is more efficient than modelling them in triples
+##	   3.4) system term aliases may be sourced from here and modelled if the user so wishes
+##     3.5) sourcing aliases from here guarantees automatic consistensency across distributed mtstores, with models the supporting ontologies must be shared
+##
+## 12/05/2010: terms moved from prefs01.dat to alias_ontology01.dat
+## 03/06/2010: rev_of > antonym_of, syn_of > synonym_of
+## 07/07/2010: alias_ontology.dat cloned from alias_ontology01.dat for SVN versioning
+## 24/11/2010: extraneous (non exploited terms) removed
+##
+antonym_of				::- rev_of
+synonym_of				::- syn_of
+contains				::- contains
+contained_by			::- contained_by
+has_urins				::- has_urins
+urins_for				::- urins_for
+URIcontainer			::- URIcontainer
+has_uriprotocol			::- has_uriprotocol
+has_uriauthority		::- has_uriauthority
+has_uripath				::- has_uripath
+has_uriquery			::- has_uriquery
+has_urifragment			::- has_urifragment
+has_uribase				::- has_uribase
